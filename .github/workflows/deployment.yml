@@ -1,0 +1,33 @@
+name: 'Pull Request Tasks'
+
+on:
+    push:
+        branches:
+            - master
+
+jobs:
+    build_and_deploy:
+        runs-on: ubuntu-16.04
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+            - name: Build
+              working-directory: ./
+              run: |
+                  yarn
+                  yarn update-certificates
+                  yarn build
+            - name: Deploy to netlify
+              uses: netlify/actions/cli@master
+              id: netlify
+              env:
+                  NETLIFY_AUTH_TOKEN: VxXRO6NmL6k-LKf0OlMir0dVZ1XuFtb1HtMcnBVL4CM
+                  NETLIFY_SITE_ID: 606d4af5-f553-4afb-83d3-02d8bc82a97a
+              with:
+                  args: deploy --dir=build
+            - name: was deployment successfull?
+              env:
+                  NETLIFY_URL: ${{ steps.netlify.outputs.NETLIFY_URL }}
+                  SPARHANDY_URL: https://${{ steps.vars.outputs.branch_name }}.storybook.sparhandy.powwow.de
+              run: |
+                  [ -z "$NETLIFY_URL" ] && exit 1 || echo "Successfully: $NETLIFY_URL"
