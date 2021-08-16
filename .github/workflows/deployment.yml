@@ -24,7 +24,7 @@ jobs:
                   NETLIFY_AUTH_TOKEN: VxXRO6NmL6k-LKf0OlMir0dVZ1XuFtb1HtMcnBVL4CM
                   NETLIFY_SITE_ID: 606d4af5-f553-4afb-83d3-02d8bc82a97a
               with:
-                  args: deploy --dir=build
+                  args: deploy --dir=build --prod
             - name: was deployment successfull?
               env:
                   NETLIFY_URL: ${{ steps.netlify.outputs.NETLIFY_URL }}
